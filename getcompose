@@ -1,0 +1,28 @@
+#!/bin/sh
+set -e
+#
+# Script to install the latest version of docker compose
+#    'curl -sSL http://sjeeva.github.io/getcompose | sudo sh'
+# or:
+#    'wget -qO- http://sjeeva.github.io/getcompose | sudo sh'
+#
+
+
+if command -v curl > /dev/null
+then 
+    VERSION=$(curl -i -s https://github.com/docker/compose/releases/latest | grep ^Location | sed "s/^.*tag\///" | sed "s/\r$//")
+    CMD="curl -sSL "
+elif command -v wget  > /dev/null
+then
+    VERSION=$(wget  --max-redirect 0  https://github.com/docker/compose/releases/latest  2>&1 | grep Location | sed "s/^.*tag\///" | sed "s/ .*$//")
+    CMD="wget -qO- "
+else
+    echo "This tool needs either curl or wget"
+    exit 1
+fi
+
+SRC="https://github.com/docker/compose/releases/download/${VERSION}/docker-compose-`uname -s`-`uname -m`"
+DST=/usr/local/bin/docker-compose
+$CMD $SRC > $DST
+chmod +x $DST
+echo $(docker-compose -v) is installed
