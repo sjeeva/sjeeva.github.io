@@ -25,4 +25,4 @@ SRC="https://github.com/docker/compose/releases/download/${VERSION}/docker-compo
 DST=/usr/local/bin/docker-compose
 $CMD $SRC > $DST
 chmod +x $DST
-echo $(docker-compose -v) is installed
+echo $($DST -v) is installed
